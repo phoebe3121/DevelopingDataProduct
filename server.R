@@ -1,6 +1,13 @@
 source("helper.R")
 
-installAndRequireLibs(c("data.table","dplyr","plyr","maps","RColorBrewer","colorspace"))
+library(data.table)
+library(dplyr)
+library(plyr)
+library(maps)
+library(RColorBrewer)
+library(colorspace)
+library(mapproj)
+#installAndRequireLibs(c("data.table","dplyr","plyr","maps","RColorBrewer","colorspace"))
 
 mydf <- readRDS(file="data/unemploymentPovertyIncome2009FIPS.rds")
 
@@ -62,7 +69,6 @@ mydf$incomeColors <- IncomeColor[
 shinyServer(function(input, output) {
 
 	output$map <- renderPlot({	
-		state <- input$state
 		metric <-switch(input$metric,
 						"Unemployment Rate" = 
 							list("unempColors", UnempCutTex, UnempColor),
@@ -74,18 +80,17 @@ shinyServer(function(input, output) {
 							list("PovertyPercent5to17Colors", PovertyCutTex, PovertyPercentColor),
 						"Median Income Level" = 
 							list("incomeColors", IncomeCutTex, IncomeColor))
-		PovertyMap(state=state, metric=metric[[1]], mydf=mydf, legendTex=metric[[2]], legendColor=metric[[3]])
+		PovertyMap(state=input$state, metric=metric[[1]], mydf=mydf, legendTex=metric[[2]], legendColor=metric[[3]])
 	})
 	
 	output$table <- renderDataTable({
-		state <- input$state
 		metric <-switch(input$metric,
 						"Unemployment Rate" = "unemp",
 						"Poverty Rate Among All" = "Poverty.Percent.All.Ages", 
 						"Poverty Rate Among Under 18" = "Poverty.Percent.Under.Age.18", 
 						"Poverty Rate 5 to 17 years old" = "Poverty.Percent.Ages.5.17",
 						"Median Income Level" = "Median.Household.Income")
-		PovertyTable(state=state, numCol=metric, mydf=mydf)
+		PovertyTable(state=input$state, numCol=metric, mydf=mydf)
 	})
 		
 })

@@ -16,6 +16,9 @@ PovertyMap <- function(state, metric, mydf, legendTex, legendColor){
 		map("county", region=state, lty=0, fill=T, col=mydf[[metric]][grepl(state,mydf$polyname)], 
 			projection="polyconic",
 			resolution=0, myborder=0, mar=c(0,0,0,0))
+	    map("county", region=state, col="white", fill = FALSE, add=T,
+	        lty=1, lwd=1, projection="polyconic",
+	        myborder=0, mar=c(0,0,0,0))
 	}
 	legend("bottomleft", legend=legendTex, fill=legendColor)
 }
